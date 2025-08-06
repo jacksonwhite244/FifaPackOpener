@@ -147,7 +147,7 @@ def generate_card_image(bg_url, face_url, info, width, height, player_width, pla
 def get_all_player_links():
     print("Collecting player links...")
     player_links = []
-    for page in range(1, 100):  # max pages
+    for page in range(1, 2):  # max pages
         print(f"Scraping page {page}...")
         url = LISTING_URL.format(page)
         response = requests.get(url, headers=HEADERS)
