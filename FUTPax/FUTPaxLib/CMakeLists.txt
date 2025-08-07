@@ -8,7 +8,12 @@ set(SOURCE_FILES
         Draft.cpp
         Draft.h
         Game.cpp
-        Game.h)
+        Game.h
+        PackOpener.cpp
+        PackOpener.h
+        pch.h
+        GameMode.cpp
+        GameMode.h)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
@@ -26,3 +31,5 @@ target_link_libraries(${PROJECT_NAME}
         "${SFML_LIB_DIR}/libsfml-audio.dylib"
         "${SFML_LIB_DIR}/libsfml-network.dylib"
 )
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)

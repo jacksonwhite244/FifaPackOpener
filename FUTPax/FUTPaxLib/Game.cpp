@@ -1,8 +1,11 @@
-//
-// Created by Jackson White on 8/6/25.
-//
+///
+/// Created by Jackson White on 8/6/25.
+///
 
+#include "pch.h"
 #include "Game.h"
+
+#include "PackOpener.h"
 
 using namespace std;
 
@@ -33,6 +36,9 @@ void Game::Update() {
  */
 void Game::Render() {
     mWindow->clear(sf::Color::Transparent);
+
+    mGameMode->Draw(mWindow);
+
     mWindow->display();
 }
 
@@ -41,13 +47,14 @@ void Game::Render() {
  */
 void Game::InitializeVariables() {
     mWindow = nullptr;
+    mGameMode = std::make_shared<PackOpener>();
 }
 
 /**
  * Initialize the window with a certain size
  */
 void Game::InitializeWindow() {
-    mVideoMode.size = {1536, 896};
+    mVideoMode.size = {672, 950};
     mWindow = new sf::RenderWindow(mVideoMode, "FUTPax", sf::Style::Titlebar | sf::Style::Close);
 }
 
