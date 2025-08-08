@@ -65,14 +65,19 @@ bool Game::GameRunning() const {
 void Game::CheckEvents() {
     while (std::optional<sf::Event> event = mWindow->pollEvent())
     {
-        if (event->is<sf::Event::Closed>())
-        {
+        if (event->is<sf::Event::Closed>()) {
             mWindow->close();
         }
-        else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-        {
+        else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 mWindow->close();
+        }
+
+        /// the user has clicked the mouse
+        else if (const auto* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
+            if (buttonPressed->button == sf::Mouse::Button::Left && mInGame) {
+                mGameMode->OnClick(buttonPressed);
+            }
         }
     }
 }

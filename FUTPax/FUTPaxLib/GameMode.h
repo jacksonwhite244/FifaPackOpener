@@ -21,9 +21,14 @@ private:
     sf::Texture* mBackgroundTexture = nullptr;
 
 public:
+    virtual ~GameMode();
+
     GameMode(std::string backgroundName);
 
     virtual void Draw(sf::RenderWindow *window);
+
+    /// pure virtual function where the game mode will interact when the user clicks on the screen
+    virtual void OnClick(const sf::Event::MouseButtonReleased *) = 0;
 };
 
 

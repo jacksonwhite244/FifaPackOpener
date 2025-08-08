@@ -19,4 +19,8 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/formations/
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/backgrounds/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/backgrounds/)
 
+# Copy the images folder
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/images/
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/images/)
+
 target_link_libraries(FUTPaxExeutable PRIVATE FUTPaxLib)

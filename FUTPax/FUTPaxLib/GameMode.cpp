@@ -32,3 +32,11 @@ void GameMode::Draw(sf::RenderWindow* window) {
         window->draw(*mBackgroundSprite);
     }
 }
+
+/**
+ * virtual destructor that deleted pointers to texture and sprites
+ */
+GameMode::~GameMode() {
+    delete mBackgroundTexture;
+    delete mBackgroundSprite;
+};

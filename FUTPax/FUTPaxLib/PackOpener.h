@@ -18,12 +18,31 @@ public:
 
     void Draw(sf::RenderWindow *window) override;
 
+private:
+    /// vector of all sprites of packed cards
     std::vector<std::shared_ptr<sf::Sprite>> mCards;
 
+    /// vector of all the textures of packed cards
     std::vector<std::shared_ptr<sf::Texture>> mTextures;
 
-private:
+    /// the texture of the actual pack
+    std::shared_ptr<sf::Texture> mPackTexture = nullptr;
 
+    /// the sprite of the actual pack
+    std::shared_ptr<sf::Sprite> mPackSprite = nullptr;
+
+    /// booleank if the user has opened the pack yet
+    bool mOpened = false;
+
+    /// boolean if the user has fully opened the pack yet (all 9 cards displayed)
+    bool mFullOpened = false;
+
+    /// if the pack is currently in the changing state (pack is going up and face card is revealing)
+    bool mOpening = false;
+
+    void OnClick(const sf::Event::MouseButtonReleased *) override;
+
+    void AdjustPack();
 };
 
 

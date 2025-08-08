@@ -30,6 +30,8 @@ private:
     /// the game mode that is selected
     std::shared_ptr<GameMode> mGameMode = nullptr;
 
+    /// boolean if the game mode is being shown, or just in normal menus (will be false normally once menu started)
+    bool mInGame = true;
 
 
 public:
