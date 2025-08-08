@@ -7,6 +7,7 @@
 #define OPENER_H
 
 #include "GameMode.h"
+class Game;
 
 /**
  * Pack Opener mode where user can open free packs. Derived from GameMode class
@@ -14,16 +15,14 @@
  */
 class PackOpener : public GameMode {
 public:
-    PackOpener();
+    PackOpener() =  delete;
+    PackOpener(Game * game);
 
     void Draw(sf::RenderWindow *window) override;
 
 private:
     /// vector of all sprites of packed cards
-    std::vector<std::shared_ptr<sf::Sprite>> mCards;
-
-    /// vector of all the textures of packed cards
-    std::vector<std::shared_ptr<sf::Texture>> mTextures;
+    std::vector<std::pair<std::pair<std::shared_ptr<sf::Sprite>, std::shared_ptr<sf::Texture>>, int>> mCards;
 
     /// the texture of the actual pack
     std::shared_ptr<sf::Texture> mPackTexture = nullptr;
@@ -31,7 +30,7 @@ private:
     /// the sprite of the actual pack
     std::shared_ptr<sf::Sprite> mPackSprite = nullptr;
 
-    /// booleank if the user has opened the pack yet
+    /// boolean if the user has opened the pack yet
     bool mOpened = false;
 
     /// boolean if the user has fully opened the pack yet (all 9 cards displayed)
@@ -43,6 +42,12 @@ private:
     void OnClick(const sf::Event::MouseButtonReleased *) override;
 
     void AdjustPack();
+
+    void GeneratePack();
+
+    void FullyOpenedCardPositions();
+
+    void NewPack();
 };
 
 

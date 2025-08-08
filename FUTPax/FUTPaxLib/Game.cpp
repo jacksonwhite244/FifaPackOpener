@@ -13,6 +13,7 @@ using namespace std;
  * Base constructor for the game, Initializes variables and creates the window
  */
 Game::Game() {
+    InitializeAvailableCards();
     InitializeVariables();
     InitializeWindow();
 }
@@ -46,8 +47,7 @@ void Game::Render() {
  * Initialize all the variables of the game
  */
 void Game::InitializeVariables() {
-    mWindow = nullptr;
-    mGameMode = std::make_shared<PackOpener>();
+    mGameMode = std::make_shared<PackOpener>(this);
 }
 
 /**
@@ -77,6 +77,23 @@ void Game::CheckEvents() {
         else if (const auto* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
             if (buttonPressed->button == sf::Mouse::Button::Left && mInGame) {
                 mGameMode->OnClick(buttonPressed);
+            }
+        }
+    }
+}
+
+/**
+ * load in all card image names from the cards folder
+ * Store the image names inside a vector
+ */
+void Game::InitializeAvailableCards() {
+    string cardPath = "/Users/jacksonwhite/CodingProjects/FifaPackOpener/FUTPax/cards";
+    for (const auto& entry : std::filesystem::directory_iterator(cardPath)) {
+        if (entry.is_regular_file()) {
+            auto path = entry.path();
+            // Filter for image extensions if needed
+            if (path.extension() == ".png" || path.extension() == ".jpg") {
+                mAvailableCards.push_back(path.filename().string());
             }
         }
     }

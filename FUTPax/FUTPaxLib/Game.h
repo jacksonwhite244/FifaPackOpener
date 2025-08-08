@@ -17,15 +17,19 @@ class GameMode;
  */
 class Game {
 private:
+    void InitializeVariables();
+
+    void InitializeWindow();
+
+    void CheckEvents();
+
+    void InitializeAvailableCards();
+
     /// the window that portrays the game
     sf::RenderWindow* mWindow;
 
     /// the size of the screen
     sf::VideoMode mVideoMode;
-
-    void InitializeVariables();
-
-    void InitializeWindow();
 
     /// the game mode that is selected
     std::shared_ptr<GameMode> mGameMode = nullptr;
@@ -33,19 +37,25 @@ private:
     /// boolean if the game mode is being shown, or just in normal menus (will be false normally once menu started)
     bool mInGame = true;
 
+    /// all the card path names in the cards folder
+    std::vector<std::string> mAvailableCards;
 
 public:
     Game();
 
     ~Game();
 
-    void CheckEvents();
-
     bool GameRunning() const;
 
     void Render();
 
     void Update();
+
+    /**
+     * Get a list of all available cards in the game
+     * @return vector of all card path names
+     */
+    std::vector<std::string> GetAvailableCards() { return mAvailableCards; };
 };
 
 

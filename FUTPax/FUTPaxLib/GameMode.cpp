@@ -14,7 +14,7 @@ using namespace std;
  *
  * @param backgroundName the background filepath to the png
  */
-GameMode::GameMode(std::string backgroundName) {
+GameMode::GameMode(std::string backgroundName, Game * game) : mGame(game) {
     mBackgroundTexture = new sf::Texture();
     if (mBackgroundTexture->loadFromFile(backgroundName)) {
         mBackgroundSprite = new sf::Sprite(*mBackgroundTexture);
