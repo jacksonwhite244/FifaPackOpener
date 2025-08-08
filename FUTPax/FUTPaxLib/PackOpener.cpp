@@ -21,6 +21,11 @@ PackOpener::PackOpener(Game * game) : GameMode("backgrounds/background.png", gam
         mPackSprite->setOrigin(sf::Vector2f(packSize.x / 2.f, packSize.y / 2.f));
         mPackSprite->setPosition(sf::Vector2f(672 / 2.f, 950 / 2.f));
     }
+    mHomeTexture = std::make_shared<sf::Texture>();
+    if (mHomeTexture->loadFromFile("images/home-icon.png")) {
+        mHomeSprite = std::make_shared<sf::Sprite>(*mHomeTexture);
+        mHomeSprite->setPosition(sf::Vector2f(5, 5));
+    }
     GeneratePack();
 }
 
@@ -36,6 +41,9 @@ void PackOpener::Draw(sf::RenderWindow* window) {
     if (not mOpened) {
         window->draw(*mCards[0].first.first);
         window->draw(*mPackSprite);
+        if (not mOpening) {
+            window->draw(*mHomeSprite);
+        }
     }
 
     /// is opened, but not fully (showing first card)
@@ -48,6 +56,7 @@ void PackOpener::Draw(sf::RenderWindow* window) {
         for (auto card : mCards) {
             window->draw(*card.first.first);
         }
+        window->draw(*mHomeSprite);
     }
 
 }
@@ -57,12 +66,28 @@ void PackOpener::Draw(sf::RenderWindow* window) {
  * @param  mouseButton he event we are dealong with (mouse button released)
  */
 void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
+
+
+    if (mHomeSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
+        /// if the pack is currently opening or opened but not fully opened, skip since the home icon isnt being shown
+        /// everything other than that should result in the user being sent back home
+        if (not ((not mOpened && mOpening) || (mOpened and not mFullOpened))) {
+            /// some sort of call to make us go back to the home menu
+        }
+    }
+
     if (not mOpened) {
-        mOpening = true;
+        if (mPackSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
+            // Mouse clicked inside the pack sprite
+            mOpening = true;
+        }
+
     }
     else if (mOpened and not mFullOpened) {
-        mFullOpened = true;
-        FullyOpenedCardPositions();
+        if (mCards[0].first.first->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
+            mFullOpened = true;
+            FullyOpenedCardPositions();
+        }
     }
 
     else if (mOpened and mFullOpened) {

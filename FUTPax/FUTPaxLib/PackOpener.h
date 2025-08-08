@@ -30,6 +30,12 @@ private:
     /// the sprite of the actual pack
     std::shared_ptr<sf::Sprite> mPackSprite = nullptr;
 
+    /// the texture of the home icon
+    std::shared_ptr<sf::Texture> mHomeTexture = nullptr;
+
+    /// the sprite of the home icon
+    std::shared_ptr<sf::Sprite> mHomeSprite = nullptr;
+
     /// boolean if the user has opened the pack yet
     bool mOpened = false;
 
