@@ -14,8 +14,8 @@ using namespace std;
  */
 Game::Game() {
     InitializeAvailableCards();
-    InitializeVariables();
     InitializeWindow();
+    InitializeMenuOptions();
 }
 
 /**
@@ -38,7 +38,18 @@ void Game::Update() {
 void Game::Render() {
     mWindow->clear(sf::Color::Transparent);
 
-    mGameMode->Draw(mWindow);
+    /// if in a game, draw the game mode
+    if (mInGame) {
+        mGameMode->Draw(mWindow);
+    }
+
+    /// if not, draw the main menu
+    else {
+        for (auto sprite : mMenuSprites) {
+            mWindow->draw(*sprite);
+        }
+    }
+
 
     mWindow->display();
 }
@@ -47,7 +58,7 @@ void Game::Render() {
  * Initialize all the variables of the game
  */
 void Game::InitializeVariables() {
-    mGameMode = std::make_shared<PackOpener>(this);
+
 }
 
 /**
@@ -75,10 +86,23 @@ void Game::CheckEvents() {
 
         /// the user has clicked the mouse
         else if (const auto* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
-            if (buttonPressed->button == sf::Mouse::Button::Left && mInGame) {
-                mGameMode->OnClick(buttonPressed);
+            if (buttonPressed->button == sf::Mouse::Button::Left) {
+                if (mInGame) {
+                    mGameMode->OnClick(buttonPressed);
+                }
+                else {
+                    /// user has clicked pack opener button
+                    if (mMenuSprites[2]->getGlobalBounds().contains(sf::Vector2<float>(buttonPressed->position))) {
+                        mGameMode = std::make_shared<PackOpener>(this);
+                        mInGame = true;
+                    }
+                }
             }
         }
+    }
+    if (mGameMode && mInGame && mGameMode->WantsToExit()) {
+        mGameMode = nullptr;
+        mInGame = false;
     }
 }
 
@@ -96,5 +120,36 @@ void Game::InitializeAvailableCards() {
                 mAvailableCards.push_back(path.filename().string());
             }
         }
+    }
+}
+
+/**
+ * Create the sprites and textures of all the menu options
+ */
+void Game::InitializeMenuOptions() {
+    /// background sprite + texture
+    shared_ptr<sf::Texture> backgroundTexture = make_shared<sf::Texture>();
+    if (backgroundTexture->loadFromFile("backgrounds/background.png")) {
+        shared_ptr<sf::Sprite> draft = make_shared<sf::Sprite>(*backgroundTexture);
+        mMenuSprites.push_back(draft);
+        mMenuTextures.push_back(backgroundTexture);
+    }
+
+    /// draft mode sprite + texture
+    shared_ptr<sf::Texture> draftTexture = make_shared<sf::Texture>();
+    if (draftTexture->loadFromFile("images/draft.png")) {
+        shared_ptr<sf::Sprite> draft = make_shared<sf::Sprite>(*draftTexture);
+        draft->setPosition({16, 44.76});
+        mMenuSprites.push_back(draft);
+        mMenuTextures.push_back(draftTexture);
+    }
+
+    /// pack opener sprite + texture
+    shared_ptr<sf::Texture> packModeTexture = make_shared<sf::Texture>();
+    if (packModeTexture->loadFromFile("images/pack.png")) {
+        shared_ptr<sf::Sprite> packMode = make_shared<sf::Sprite>(*packModeTexture);
+        packMode->setPosition({16, 260.94});
+        mMenuSprites.push_back(packMode);
+        mMenuTextures.push_back(packModeTexture);
     }
 }

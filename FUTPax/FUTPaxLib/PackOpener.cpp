@@ -66,23 +66,25 @@ void PackOpener::Draw(sf::RenderWindow* window) {
  * @param  mouseButton he event we are dealong with (mouse button released)
  */
 void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
-
-
+    /// user has clicked on the home sprite
     if (mHomeSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
         /// if the pack is currently opening or opened but not fully opened, skip since the home icon isnt being shown
         /// everything other than that should result in the user being sent back home
         if (not ((not mOpened && mOpening) || (mOpened and not mFullOpened))) {
-            /// some sort of call to make us go back to the home menu
+            ExitGame();
+            return;
         }
     }
 
+    /// pack isnt open, so check if the pack has been opened by user
     if (not mOpened) {
         if (mPackSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
             // Mouse clicked inside the pack sprite
             mOpening = true;
         }
-
     }
+
+    /// pack is opened, but not fully, so check if the user has then fully opened the pack
     else if (mOpened and not mFullOpened) {
         if (mCards[0].first.first->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
             mFullOpened = true;
@@ -90,6 +92,7 @@ void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
         }
     }
 
+    /// the pack is fully opened, so generate a new pack
     else if (mOpened and mFullOpened) {
         NewPack();
     }
@@ -198,4 +201,11 @@ void PackOpener::NewPack() {
     mCards.clear();
     GeneratePack();
     mPackSprite->setPosition(sf::Vector2f(672 / 2.f, 950 / 2.f));
+}
+
+/**
+ * Custom destructor for the pack opener mode. Clear out all cards and delete the base class too
+ */
+PackOpener::~PackOpener() {
+    mCards.clear();
 }

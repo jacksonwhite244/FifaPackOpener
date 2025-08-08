@@ -15,10 +15,13 @@ class Game;
  */
 class PackOpener : public GameMode {
 public:
+    /// default constructor deleted
     PackOpener() =  delete;
     PackOpener(Game * game);
 
     void Draw(sf::RenderWindow *window) override;
+
+    ~PackOpener();
 
 private:
     /// vector of all sprites of packed cards

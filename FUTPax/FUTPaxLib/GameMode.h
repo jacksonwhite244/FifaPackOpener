@@ -21,7 +21,11 @@ private:
     /// the texture of the background
     sf::Texture* mBackgroundTexture = nullptr;
 
+    /// pointer to the game object
     Game * mGame = nullptr;
+
+    /// boolean of the status of the game mode. If we exit, go back to main menu
+    bool mExitGame = false;
 
 public:
     /// default constructor disabled
@@ -38,6 +42,16 @@ public:
 
     /// return a pointer to the game inside the game mode
     Game * GetGame() {return mGame;};
+
+    /// exit the game mode
+    void ExitGame() {mExitGame = true;};
+
+    /**
+     * Check if we want to exit the game mode
+     * @return boolean true if we want to exit, false if not
+     */
+    bool WantsToExit() { return mExitGame; };
+
 };
 
 

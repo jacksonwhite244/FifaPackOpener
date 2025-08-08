@@ -25,6 +25,8 @@ private:
 
     void InitializeAvailableCards();
 
+    void InitializeMenuOptions();
+
     /// the window that portrays the game
     sf::RenderWindow* mWindow;
 
@@ -35,10 +37,16 @@ private:
     std::shared_ptr<GameMode> mGameMode = nullptr;
 
     /// boolean if the game mode is being shown, or just in normal menus (will be false normally once menu started)
-    bool mInGame = true;
+    bool mInGame = false;
 
     /// all the card path names in the cards folder
     std::vector<std::string> mAvailableCards;
+
+    /// all the sprites for the menu options
+    std::vector<std::shared_ptr<sf::Sprite>> mMenuSprites;
+
+    /// all of the textures for menu options
+    std::vector<std::shared_ptr<sf::Texture>> mMenuTextures;
 
 public:
     Game();
