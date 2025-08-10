@@ -4,7 +4,7 @@
 
 #include "pch.h"
 #include "Game.h"
-
+#include "Draft.h"
 #include "PackOpener.h"
 
 using namespace std;
@@ -16,6 +16,8 @@ Game::Game() {
     InitializeAvailableCards();
     InitializeWindow();
     InitializeMenuOptions();
+    mGameMode = std::make_shared<Draft>(this);
+    mInGame = true;
 }
 
 /**
