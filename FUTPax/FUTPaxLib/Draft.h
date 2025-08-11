@@ -26,7 +26,21 @@ private:
     /// the sprite of the pitch
     std::shared_ptr<sf::Sprite> mPitchSprite = nullptr;
 
+    /// all the possible modes that are available during the gameplay
+    enum Mode { ChoosingFormation, PickingPlayer, DisplayingTeam};
+
+    /// the current mode
+    Mode mMode;
+
+    /// vector of all sprites of optional formations
+    std::vector<std::pair<std::pair<std::shared_ptr<sf::Sprite>, std::shared_ptr<sf::Texture>>, std::string>> mFormations;
+
     void OnClick(const sf::Event::MouseButtonReleased *) override;
+
+    void LoadSprites();
+
+    void LoadFormations();
+
 
 public:
     /// default constructor deleted
@@ -35,6 +49,8 @@ public:
     Draft(Game *game);
 
     void Draw(sf::RenderWindow *window) override;
+
+    ~Draft();
 };
 
 

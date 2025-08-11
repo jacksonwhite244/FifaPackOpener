@@ -15,6 +15,10 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cards/
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/formations/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/formations/)
 
+# Copy the formation folder (ONE WILL BE DELETED LATER)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/formation/
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/formation/)
+
 # Copy the backgrounds folder
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/backgrounds/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/backgrounds/)

@@ -13,11 +13,11 @@ using namespace std;
  * Base constructor for the game, Initializes variables and creates the window
  */
 Game::Game() {
+    InitializeVariables();
     InitializeAvailableCards();
+    InitializeAvailableFormations();
     InitializeWindow();
     InitializeMenuOptions();
-    mGameMode = std::make_shared<Draft>(this);
-    mInGame = true;
 }
 
 /**
@@ -39,20 +39,16 @@ void Game::Update() {
  */
 void Game::Render() {
     mWindow->clear(sf::Color::Transparent);
-
     /// if in a game, draw the game mode
     if (mInGame) {
         mGameMode->Draw(mWindow);
     }
-
     /// if not, draw the main menu
     else {
         for (auto sprite : mMenuSprites) {
             mWindow->draw(*sprite);
         }
     }
-
-
     mWindow->display();
 }
 
@@ -60,7 +56,13 @@ void Game::Render() {
  * Initialize all the variables of the game
  */
 void Game::InitializeVariables() {
-
+    /// background sprite + texture
+    shared_ptr<sf::Texture> backgroundTexture = make_shared<sf::Texture>();
+    if (backgroundTexture->loadFromFile("backgrounds/background.png")) {
+        shared_ptr<sf::Sprite> draft = make_shared<sf::Sprite>(*backgroundTexture);
+        mMenuSprites.push_back(draft);
+        mMenuTextures.push_back(backgroundTexture);
+    }
 }
 
 /**
@@ -71,9 +73,6 @@ void Game::InitializeWindow() {
     mWindow = new sf::RenderWindow(mVideoMode, "FUTPax", sf::Style::Titlebar | sf::Style::Close);
 }
 
-bool Game::GameRunning() const {
-    return mWindow->isOpen();
-}
 
 void Game::CheckEvents() {
     while (std::optional<sf::Event> event = mWindow->pollEvent())
@@ -93,6 +92,12 @@ void Game::CheckEvents() {
                     mGameMode->OnClick(buttonPressed);
                 }
                 else {
+                    /// user has clicked the draft button
+                    if (mMenuSprites[1]->getGlobalBounds().contains(sf::Vector2<float>(buttonPressed->position))) {
+                        mGameMode = std::make_shared<Draft>(this);
+                        mInGame = true;
+                    }
+
                     /// user has clicked pack opener button
                     if (mMenuSprites[2]->getGlobalBounds().contains(sf::Vector2<float>(buttonPressed->position))) {
                         mGameMode = std::make_shared<PackOpener>(this);
@@ -126,17 +131,26 @@ void Game::InitializeAvailableCards() {
 }
 
 /**
+ * load in all formations names from the cards folder
+ * Store the formations inside a vector
+ */
+void Game::InitializeAvailableFormations() {
+    string cardPath = "/Users/jacksonwhite/CodingProjects/FifaPackOpener/FUTPax/formation";
+    for (const auto& entry : std::filesystem::directory_iterator(cardPath)) {
+        if (entry.is_regular_file()) {
+            auto path = entry.path();
+            // Filter for image extensions if needed
+            if (path.extension() == ".png" || path.extension() == ".jpg") {
+                mFormations.push_back(path.filename().string());
+            }
+        }
+    }
+}
+
+/**
  * Create the sprites and textures of all the menu options
  */
 void Game::InitializeMenuOptions() {
-    /// background sprite + texture
-    shared_ptr<sf::Texture> backgroundTexture = make_shared<sf::Texture>();
-    if (backgroundTexture->loadFromFile("backgrounds/background.png")) {
-        shared_ptr<sf::Sprite> draft = make_shared<sf::Sprite>(*backgroundTexture);
-        mMenuSprites.push_back(draft);
-        mMenuTextures.push_back(backgroundTexture);
-    }
-
     /// draft mode sprite + texture
     shared_ptr<sf::Texture> draftTexture = make_shared<sf::Texture>();
     if (draftTexture->loadFromFile("images/draft.png")) {

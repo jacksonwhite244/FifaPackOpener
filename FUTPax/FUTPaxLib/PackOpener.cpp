@@ -4,7 +4,6 @@
 
 #include "pch.h"
 #include "PackOpener.h"
-#include <random>
 #include "Game.h"
 
 using namespace std;
@@ -85,7 +84,7 @@ void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     }
 
     /// pack is opened, but not fully, so check if the user has then fully opened the pack
-    else if (mOpened and not mFullOpened) {
+    else if (not mFullOpened) {
         if (mCards[0].first.first->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
             mFullOpened = true;
             FullyOpenedCardPositions();
@@ -93,9 +92,7 @@ void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     }
 
     /// the pack is fully opened, so generate a new pack
-    else if (mOpened and mFullOpened) {
-        NewPack();
-    }
+    else NewPack();
 
 }
 
@@ -166,10 +163,11 @@ void PackOpener::GeneratePack() {
     chosenCardSprite->setPosition(sf::Vector2f(672 / 2.f, 940 / 2.f));
 }
 
-
+/**
+ * Set the positions of the cards when the pack is fully opened.
+ * The cards will be in a 3x3 grid
+ */
 void PackOpener::FullyOpenedCardPositions() {
-    const int cols = 3;
-    const int rows = 3;
     const float spacingX = 190.f;  // horizontal spacing between card centers
     const float spacingY = 270.f;  // vertical spacing between card centers
 
@@ -180,7 +178,6 @@ void PackOpener::FullyOpenedCardPositions() {
     for (int row = -1; row <= 1; ++row) {
         for (int col = -1; col <= 1; ++col) {
             mCards[index].first.first->setScale(sf::Vector2f(0.75, 0.75));
-            if (index >= mCards.size()) return;
 
             float x = centerX + col * spacingX;
             float y = centerY + row * spacingY;

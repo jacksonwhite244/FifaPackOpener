@@ -25,6 +25,8 @@ private:
 
     void InitializeAvailableCards();
 
+    void InitializeAvailableFormations();
+
     void InitializeMenuOptions();
 
     /// the window that portrays the game
@@ -42,10 +44,13 @@ private:
     /// all the card path names in the cards folder
     std::vector<std::string> mAvailableCards;
 
+    /// all the formations in the formation folder
+    std::vector<std::string> mFormations;
+
     /// all the sprites for the menu options
     std::vector<std::shared_ptr<sf::Sprite>> mMenuSprites;
 
-    /// all of the textures for menu options
+    /// all the textures for menu options
     std::vector<std::shared_ptr<sf::Texture>> mMenuTextures;
 
 public:
@@ -53,17 +58,26 @@ public:
 
     ~Game();
 
-    bool GameRunning() const;
+    /// boolean to check if the game is still running
+    bool GameRunning() const { return mWindow->isOpen(); }
 
     void Render();
 
     void Update();
 
     /**
-     * Get a list of all available cards in the game
+     * Get a list of all available cards in the game (Called in PackOpener)
      * @return vector of all card path names
      */
     std::vector<std::string> GetAvailableCards() { return mAvailableCards; };
+
+    /**
+     * Get the available formations for the draft (will be called in Draft)
+     * @return a vector of all available formations
+     */
+    std::vector<std::string> GetFormations() { return mFormations; };
+
+
 };
 
 
