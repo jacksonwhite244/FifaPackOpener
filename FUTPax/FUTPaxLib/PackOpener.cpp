@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "PackOpener.h"
 #include "Game.h"
+#include "Card.h"
 
 using namespace std;
 
@@ -38,7 +39,7 @@ void PackOpener::Draw(sf::RenderWindow* window) {
     AdjustPack();
     /// cover the first card
     if (not mOpened) {
-        window->draw(*mCards[0].first.first);
+        window->draw(*mCards[0]->GetSprite());
         window->draw(*mPackSprite);
         if (not mOpening) {
             window->draw(*mHomeSprite);
@@ -47,13 +48,13 @@ void PackOpener::Draw(sf::RenderWindow* window) {
 
     /// is opened, but not fully (showing first card)
     else if (mOpened and not mFullOpened) {
-        window->draw(*mCards[0].first.first);
+        window->draw(*mCards[0]->GetSprite());
     }
 
     /// pack is fully opened showing all cards
     else if (mOpened and mFullOpened) {
         for (auto card : mCards) {
-            window->draw(*card.first.first);
+            window->draw(*card->GetSprite());
         }
         window->draw(*mHomeSprite);
     }
@@ -85,7 +86,7 @@ void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
 
     /// pack is opened, but not fully, so check if the user has then fully opened the pack
     else if (not mFullOpened) {
-        if (mCards[0].first.first->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
+        if (mCards[0]->GetSprite()->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
             mFullOpened = true;
             FullyOpenedCardPositions();
         }
@@ -138,20 +139,19 @@ void PackOpener::GeneratePack() {
             int pos = chosenCardName.rfind('_') -2;
             int cardOverall = stoi(chosenCardName.substr(pos,2));
 
-            std::pair thisPair = std::make_pair(chosenCardSprite, chosenCardTexture);
-            std::pair main = std::make_pair(thisPair, cardOverall);
-            mCards.push_back(main);
+            auto card = std::make_shared<Card>(chosenCardSprite, chosenCardTexture, cardOverall);
+            mCards.push_back(card);
         }
     }
     /// we need to now sort thse cards
     std::sort(mCards.begin(), mCards.end(),
               [](const auto& a, const auto& b) {
-                  return a.second > b.second;
+                  return a->GetRating() > b->GetRating();
               });
     /// the first card is going to be the face card,
     /// so increase the size of the sprite and position where it should be for drawing
-    auto chosenCardSprite = mCards[0].first.first;
-    auto chosenCardTexture = mCards[0].first.second;
+    auto chosenCardSprite = mCards[0]->GetSprite();
+    auto chosenCardTexture = mCards[0]->GetTexture();
     sf::Vector2f scale = sf::Vector2f(1.65,1.65);
     chosenCardSprite->setScale(scale);
 
@@ -177,12 +177,12 @@ void PackOpener::FullyOpenedCardPositions() {
     int index = 0;
     for (int row = -1; row <= 1; ++row) {
         for (int col = -1; col <= 1; ++col) {
-            mCards[index].first.first->setScale(sf::Vector2f(0.75, 0.75));
+            mCards[index]->GetSprite()->setScale(sf::Vector2f(0.75, 0.75));
 
             float x = centerX + col * spacingX;
             float y = centerY + row * spacingY;
 
-            mCards[index].first.first->setPosition(sf::Vector2f(x, y));
+            mCards[index]->GetSprite()->setPosition(sf::Vector2f(x, y));
             index++;
         }
     }

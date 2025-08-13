@@ -13,7 +13,11 @@ set(SOURCE_FILES
         PackOpener.h
         pch.h
         GameMode.cpp
-        GameMode.h)
+        GameMode.h
+        Formation.cpp
+        Formation.h
+        Card.cpp
+        Card.h)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 

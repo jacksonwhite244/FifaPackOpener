@@ -8,6 +8,7 @@
 
 #include "GameMode.h"
 class Game;
+class Formation;
 
 /**
  * Draft class game mode where the user can draft a squad
@@ -32,8 +33,8 @@ private:
     /// the current mode
     Mode mMode;
 
-    /// vector of all sprites of optional formations
-    std::vector<std::pair<std::pair<std::shared_ptr<sf::Sprite>, std::shared_ptr<sf::Texture>>, std::string>> mFormations;
+    /// vector of all  optional formations
+    std::vector<std::shared_ptr<Formation>> mFormations;
 
     void OnClick(const sf::Event::MouseButtonReleased *) override;
 
@@ -41,6 +42,7 @@ private:
 
     void LoadFormations();
 
+    void SelectFormation(std::string formationName);
 
 public:
     /// default constructor deleted

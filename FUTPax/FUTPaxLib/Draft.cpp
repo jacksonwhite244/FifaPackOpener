@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "Draft.h"
 #include "Game.h"
+#include "Formation.h"
 
 using namespace std;
 
@@ -27,8 +28,14 @@ void Draft::Draw(sf::RenderWindow *window) {
     GameMode::Draw(window);
     if (mMode == ChoosingFormation) {
         for (auto formation : mFormations) {
-            window->draw(*formation.first.first);
+            window->draw(*formation->GetSprite());
         }
+    }
+    else if (mMode == DisplayingTeam) {
+        window->draw(*mPitchSprite);
+    }
+
+    if (mMode != PickingPlayer) {
         window->draw(*mHomeSprite);
     }
 }
@@ -40,8 +47,16 @@ void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     /// user has clicked on the home sprite
     if (mHomeSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
         /// as long as the user is not picking a player, we can exit the game
-        if (not mMode == PickingPlayer) {
+        if (mMode != PickingPlayer) {
             ExitGame();
+        }
+    }
+    else if (mMode == ChoosingFormation) {
+        for (auto formation : mFormations) {
+            if (formation->WasClicked(mouseButton)) {
+                SelectFormation(formation->GetName());
+                break;
+            }
         }
     }
 }
@@ -60,7 +75,9 @@ void Draft::LoadSprites() {
     if (mPitchTexture->loadFromFile("backgrounds/pitch.png")) {
         mPitchSprite = std::make_shared<sf::Sprite>(*mPitchTexture);
         mPitchSprite->setOrigin({672/2,557/2});
+        mPitchSprite->setScale({1, 1.75});
         mPitchSprite->setPosition(sf::Vector2f(672/2, 950/2));
+
     }
 }
 
@@ -79,11 +96,10 @@ void Draft::LoadFormations() {
 
         shared_ptr<sf::Texture> chosenFormationTexture = std::make_shared<sf::Texture>();
         if (chosenFormationTexture->loadFromFile("formation/" + chosenFormationName)) {
-            shared_ptr<sf::Sprite> chosenCardSprite = std::make_shared<sf::Sprite>(*chosenFormationTexture);
+            shared_ptr<sf::Sprite> chosenFormationSprite = std::make_shared<sf::Sprite>(*chosenFormationTexture);
 
-            std::pair thisPair = std::make_pair(chosenCardSprite, chosenFormationTexture);
-            std::pair main = std::make_pair(thisPair, chosenFormationName);
-            mFormations.push_back(main);
+            auto formation = std::make_shared<Formation>(chosenFormationSprite, chosenFormationTexture, chosenFormationName);
+            mFormations.push_back(formation);
         }
         availableFormations.erase(remove(availableFormations.begin(), availableFormations.end(), chosenFormationName), availableFormations.end());
         dist = uniform_int_distribution<>(0, availableFormations.size()-1);
@@ -93,12 +109,17 @@ void Draft::LoadFormations() {
     for (int col = 0; col < 2; col++) {
         for (int row = 0; row < 3; row++) {
             /// pointer to the sprite of the formation
-            auto formation = mFormations[index].first.first;
+            auto formation = mFormations[index]->GetSprite();
 
             formation->setPosition({col * 336 + 5.f, 270.f* row + 60});
             index++;
         }
     }
+}
+
+void Draft::SelectFormation(string formationName) {
+    mMode = DisplayingTeam;
+    mFormations.clear();
 }
 
 /**
@@ -108,3 +129,4 @@ void Draft::LoadFormations() {
 Draft::~Draft() {
     mFormations.clear();
 }
+

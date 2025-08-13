@@ -8,6 +8,7 @@
 
 #include "GameMode.h"
 class Game;
+class Card;
 
 /**
  * Pack Opener mode where user can open free packs. Derived from GameMode class
@@ -25,7 +26,7 @@ public:
 
 private:
     /// vector of all sprites of packed cards
-    std::vector<std::pair<std::pair<std::shared_ptr<sf::Sprite>, std::shared_ptr<sf::Texture>>, int>> mCards;
+    std::vector<std::shared_ptr<Card>> mCards;
 
     /// the texture of the actual pack
     std::shared_ptr<sf::Texture> mPackTexture = nullptr;
