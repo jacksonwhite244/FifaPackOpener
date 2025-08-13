@@ -25,6 +25,8 @@ public:
 
     Card(std::shared_ptr<sf::Sprite>, std::shared_ptr<sf::Texture>, int);
 
+    bool WasClicked(const sf::Event::MouseButtonReleased *mouseButton);
+
     /**
      * Get the sprite of the card
      * @return a pointer to the sprite

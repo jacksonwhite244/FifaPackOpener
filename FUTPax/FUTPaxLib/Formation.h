@@ -39,7 +39,7 @@ public:
      * Get the name of the formation
      * @return return the name of the formation as a string
      */
-    std::string GetName() { return mName; };
+    std::string GetName() { return mName.substr(0, mName.length() - 4); };
 };
 
 

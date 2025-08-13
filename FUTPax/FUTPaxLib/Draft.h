@@ -9,6 +9,7 @@
 #include "GameMode.h"
 class Game;
 class Formation;
+class Card;
 
 /**
  * Draft class game mode where the user can draft a squad
@@ -27,6 +28,8 @@ private:
     /// the sprite of the pitch
     std::shared_ptr<sf::Sprite> mPitchSprite = nullptr;
 
+    std::vector<std::shared_ptr<Card>> mCards;
+
     /// all the possible modes that are available during the gameplay
     enum Mode { ChoosingFormation, PickingPlayer, DisplayingTeam};
 
@@ -36,13 +39,16 @@ private:
     /// vector of all  optional formations
     std::vector<std::shared_ptr<Formation>> mFormations;
 
+    /// name
+    std::string mName;
+
     void OnClick(const sf::Event::MouseButtonReleased *) override;
 
     void LoadSprites();
 
     void LoadFormations();
 
-    void SelectFormation(std::string formationName);
+    void SelectFormation();
 
 public:
     /// default constructor deleted
@@ -53,6 +59,8 @@ public:
     void Draw(sf::RenderWindow *window) override;
 
     ~Draft();
+
+    void SetLocations();
 };
 
 

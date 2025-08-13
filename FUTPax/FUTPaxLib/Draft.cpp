@@ -6,6 +6,7 @@
 #include "Draft.h"
 #include "Game.h"
 #include "Formation.h"
+#include "Card.h"
 
 using namespace std;
 
@@ -33,6 +34,9 @@ void Draft::Draw(sf::RenderWindow *window) {
     }
     else if (mMode == DisplayingTeam) {
         window->draw(*mPitchSprite);
+        for (auto card : mCards) {
+            window->draw(*card->GetSprite());
+        }
     }
 
     if (mMode != PickingPlayer) {
@@ -54,8 +58,17 @@ void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     else if (mMode == ChoosingFormation) {
         for (auto formation : mFormations) {
             if (formation->WasClicked(mouseButton)) {
-                SelectFormation(formation->GetName());
+                mName = formation->GetName();
+                SelectFormation();
+                SetLocations();
                 break;
+            }
+        }
+    }
+    else if (mMode == DisplayingTeam) {
+        for (auto card : mCards) {
+            if (card->WasClicked(mouseButton)) {
+                /// start the logic for selecting the player
             }
         }
     }
@@ -117,10 +130,15 @@ void Draft::LoadFormations() {
     }
 }
 
-void Draft::SelectFormation(string formationName) {
+/**
+ * Apply the users selection by switching the mode and clearing all the formations. We will have to set up the locations
+ * of the player blocks next
+ */
+void Draft::SelectFormation() {
     mMode = DisplayingTeam;
     mFormations.clear();
 }
+
 
 /**
  * Custom destructor
@@ -130,3 +148,37 @@ Draft::~Draft() {
     mFormations.clear();
 }
 
+void Draft::SetLocations() {
+    for (int i = 0; i < 11; i++) {
+        std::shared_ptr<sf::Texture> cardTexture = std::make_shared<sf::Texture>();
+        if (cardTexture->loadFromFile("images/emptySlot.png")) {
+            std::shared_ptr<sf::Sprite> cardSprite = std::make_shared<sf::Sprite>(*cardTexture);
+            cardSprite->setScale({0.25f, 0.25f});
+            cardSprite->setOrigin({cardTexture->getSize().x / 2.f, cardTexture->getSize().y / 2.f});
+            auto card = make_shared<Card>(cardSprite, cardTexture, i);
+            mCards.push_back(card);
+        }
+    }
+    mCards[0]->GetSprite()->setPosition(sf::Vector2f(672 /2, 860));
+
+    /// DEFENDERS
+    float defenderHeight = 700;
+    if (mName[0] == '3') {
+        mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /5, defenderHeight));
+        mCards[2]->GetSprite()->setPosition(sf::Vector2f(672.f / 2 , defenderHeight));
+        mCards[3]->GetSprite()->setPosition(sf::Vector2f(672.f * 4 / 5, defenderHeight));
+    }
+    else if (mName[0] == '4') {
+        mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /10, defenderHeight));
+        mCards[2]->GetSprite()->setPosition(sf::Vector2f(672.f / 3 , defenderHeight));
+        mCards[3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3), defenderHeight));
+        mCards[4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), defenderHeight));
+    }
+    else if (mName[0] == '5') {
+        mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /10, defenderHeight));
+        mCards[2]->GetSprite()->setPosition(sf::Vector2f(672.f / 3.35 , defenderHeight));
+        mCards[3]->GetSprite()->setPosition(sf::Vector2f(672.f /2, defenderHeight));
+        mCards[4]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), defenderHeight));
+        mCards[5]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), defenderHeight));
+    }
+}

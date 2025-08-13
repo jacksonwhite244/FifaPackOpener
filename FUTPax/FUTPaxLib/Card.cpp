@@ -16,3 +16,16 @@ using namespace std;
 Card::Card(shared_ptr<sf::Sprite> sprite, shared_ptr<sf::Texture> texture , int rating) : mSprite(sprite), mTexture(texture), mRating(rating) {
 
 }
+
+/**
+ * Check if the card was selected by the user
+ *
+ * @param mouseButton the mouse button event we are checking
+ * @return true if the sprite was clicked by the user, otherwise False
+ */
+bool Card::WasClicked(const sf::Event::MouseButtonReleased * mouseButton) {
+    if (mSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
+        return true;
+    }
+    return false;
+}
