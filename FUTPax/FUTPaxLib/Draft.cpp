@@ -181,4 +181,26 @@ void Draft::SetLocations() {
         mCards[4]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), defenderHeight));
         mCards[5]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), defenderHeight));
     }
+
+    /// Forwards
+    float strikerdHeight = 180;
+    float wingerHeight = 240;
+    if (mName.back() == '1') {
+        mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /2, strikerdHeight));
+    }
+    if (mName.back() == '2') {
+        mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /3, strikerdHeight));
+        mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /3 ), strikerdHeight));
+    }
+    else if (mName.back() == '3') {
+        mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, wingerHeight));
+        mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, strikerdHeight));
+        mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), wingerHeight));
+    }
+    else if (mName.back() == '4') {
+        mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 10, wingerHeight));
+        mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, strikerdHeight));
+        mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), strikerdHeight));
+        mCards[7]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), wingerHeight));
+    }
 }
