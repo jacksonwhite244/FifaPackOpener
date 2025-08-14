@@ -69,6 +69,7 @@ void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
         for (auto card : mCards) {
             if (card->WasClicked(mouseButton)) {
                 /// start the logic for selecting the player
+                card->GetSprite()->setScale({1,1});
             }
         }
     }
@@ -149,6 +150,7 @@ Draft::~Draft() {
 }
 
 void Draft::SetLocations() {
+    mName = "451";
     for (int i = 0; i < 11; i++) {
         std::shared_ptr<sf::Texture> cardTexture = std::make_shared<sf::Texture>();
         if (cardTexture->loadFromFile("images/emptySlot.png")) {
@@ -183,24 +185,73 @@ void Draft::SetLocations() {
     }
 
     /// Forwards
+    /// check if the formation is a varient or just normal
+    char numAttackers;
+    if (mName.find('(') != string::npos) {
+        numAttackers = mName[mName.find('(') - 1];
+    }
+    else {
+        numAttackers = mName.back();
+    }
+
+    /// striker height and winger height of the sprites on the screen
     float strikerdHeight = 180;
     float wingerHeight = 240;
-    if (mName.back() == '1') {
+    if (numAttackers == '1') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /2, strikerdHeight));
     }
-    if (mName.back() == '2') {
+    if (numAttackers == '2') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /3, strikerdHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /3 ), strikerdHeight));
     }
-    else if (mName.back() == '3') {
+    else if (numAttackers == '3') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, wingerHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, strikerdHeight));
         mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), wingerHeight));
     }
-    else if (mName.back() == '4') {
+    else if (numAttackers == '4') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 10, wingerHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, strikerdHeight));
         mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), strikerdHeight));
         mCards[7]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), wingerHeight));
     }
+
+    /// Midfield
+    /// need to filer out the varients and normal positions
+    string midfield;
+    int numDefenders = (mName[0] - '0') + 1;
+    if (mName.find('(') != string::npos) {
+        midfield = mName.substr(1, mName.find('(') - 2);
+    }
+    else {
+        midfield = mName.substr(1, mName.length() - 2);
+    }
+
+    /// normal flat midfield
+    if (midfield.length() == 1) {
+        float midHeight = 460.f;
+        if (midfield == "2") {
+            mCards[numDefenders]->GetSprite()->setPosition({672.f /3, midHeight});
+            mCards[numDefenders+1]->GetSprite()->setPosition({672.f - (672.f /3), midHeight});
+        }
+        else if (midfield == "3") {
+            mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, midHeight));
+            mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, midHeight));
+            mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
+        }
+        else if (midfield == "4") {
+            mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 10, midHeight));
+            mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, midHeight));
+            mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), midHeight));
+            mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), midHeight));
+        }
+        else if (midfield == "5") {
+            mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
+            mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3.35 , midHeight));
+            mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
+            mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), midHeight));
+            mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+        }
+    }
+
 }
