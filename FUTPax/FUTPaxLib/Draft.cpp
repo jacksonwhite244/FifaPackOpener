@@ -150,7 +150,6 @@ Draft::~Draft() {
 }
 
 void Draft::SetLocations() {
-    mName = "451";
     for (int i = 0; i < 11; i++) {
         std::shared_ptr<sf::Texture> cardTexture = std::make_shared<sf::Texture>();
         if (cardTexture->loadFromFile("images/emptySlot.png")) {
@@ -251,6 +250,54 @@ void Draft::SetLocations() {
             mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
             mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), midHeight));
             mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+        }
+    }
+    else if (midfield.length() == 2) {
+        float defensiveMinded = 500.f;
+        float attackingMinded = 340.f;
+
+        int first = (midfield[0] - '0');
+        int second = (midfield[1] - '0');
+        int defensiveSpot = (mName[0] - '0') + 1;
+        /// defensive mids
+        if (first == 1) {
+            mCards[defensiveSpot]->GetSprite()->setPosition({672.f /2, defensiveMinded});
+        }
+        else if (first == 2) {
+            mCards[defensiveSpot]->GetSprite()->setPosition({672.f /3, defensiveMinded});
+            mCards[defensiveSpot + 1]->GetSprite()->setPosition({672.f - (672.f /3), defensiveMinded});
+        }
+        else if (first == 3) {
+            mCards[defensiveSpot]->GetSprite()->setPosition({672.f / 5, defensiveMinded});
+            mCards[defensiveSpot + 1]->GetSprite()->setPosition({672.f /2, defensiveMinded});
+            mCards[defensiveSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 5), defensiveMinded});
+        }
+        else if (first == 4) {
+            mCards[defensiveSpot]->GetSprite()->setPosition({(672.f / 10), defensiveMinded});
+            mCards[defensiveSpot + 1]->GetSprite()->setPosition({(672.f / 3.35), defensiveMinded});
+            mCards[defensiveSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 3.35), defensiveMinded});
+            mCards[defensiveSpot + 3]->GetSprite()->setPosition({672.f - (672.f / 10), defensiveMinded});
+        }
+
+        /// attacking mids
+        int firstSpot = first + defensiveSpot;
+        if (second == 1) {
+            mCards[firstSpot]->GetSprite()->setPosition({672.f /2, attackingMinded});
+        }
+        else if (second == 2) {
+            mCards[firstSpot]->GetSprite()->setPosition({(672.f /3), attackingMinded});
+            mCards[firstSpot + 1]->GetSprite()->setPosition({672.f - (672.f /3), attackingMinded});
+        }
+        else if (second == 3) {
+            mCards[firstSpot]->GetSprite()->setPosition({(672.f / 5), attackingMinded});
+            mCards[firstSpot + 1]->GetSprite()->setPosition({672.f / 2, attackingMinded});
+            mCards[firstSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 5), attackingMinded});
+        }
+        else if (second == 4) {
+            mCards[firstSpot]->GetSprite()->setPosition({(672.f / 10), attackingMinded});
+            mCards[firstSpot + 1]->GetSprite()->setPosition({(672.f / 3), attackingMinded});
+            mCards[firstSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 3), attackingMinded});
+            mCards[firstSpot + 3]->GetSprite()->setPosition({672.f - (672.f / 10), attackingMinded});
         }
     }
 
