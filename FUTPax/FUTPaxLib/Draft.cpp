@@ -282,11 +282,20 @@ void Draft::SetLocations() {
         }
         else if (midfield == "5") {
             if (not isVarient) {
-                mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
-                mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3.35 , attackingMinded));
-                mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
-                mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), attackingMinded));
-                mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                if (numDefenders -1 == 3) {
+                    mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
+                    mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3.35 , defensiveMinded));
+                    mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, attackingMinded));
+                    mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), defensiveMinded));
+                    mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                }
+                else {
+                    mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
+                    mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3.35 , attackingMinded));
+                    mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
+                    mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), attackingMinded));
+                    mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                }
             }
             else {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
@@ -300,29 +309,28 @@ void Draft::SetLocations() {
     else if (midfield.length() == 2) {
         int first = (midfield[0] - '0');
         int second = (midfield[1] - '0');
-        int defensiveSpot = (mName[0] - '0') + 1;
         /// defensive mids
         if (first == 1) {
-            mCards[defensiveSpot]->GetSprite()->setPosition({672.f /2, defensiveMinded});
+            mCards[numDefenders]->GetSprite()->setPosition({672.f /2, defensiveMinded});
         }
         else if (first == 2) {
-            mCards[defensiveSpot]->GetSprite()->setPosition({672.f /3, defensiveMinded});
-            mCards[defensiveSpot + 1]->GetSprite()->setPosition({672.f - (672.f /3), defensiveMinded});
+            mCards[numDefenders]->GetSprite()->setPosition({672.f /3, defensiveMinded});
+            mCards[numDefenders + 1]->GetSprite()->setPosition({672.f - (672.f /3), defensiveMinded});
         }
         else if (first == 3) {
-            mCards[defensiveSpot]->GetSprite()->setPosition({672.f / 5, defensiveMinded});
-            mCards[defensiveSpot + 1]->GetSprite()->setPosition({672.f /2, defensiveMinded});
-            mCards[defensiveSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 5), defensiveMinded});
+            mCards[numDefenders]->GetSprite()->setPosition({672.f / 5, defensiveMinded});
+            mCards[numDefenders + 1]->GetSprite()->setPosition({672.f /2, defensiveMinded});
+            mCards[numDefenders + 2]->GetSprite()->setPosition({672.f - (672.f / 5), defensiveMinded});
         }
         else if (first == 4) {
-            mCards[defensiveSpot]->GetSprite()->setPosition({(672.f / 10), defensiveMinded});
-            mCards[defensiveSpot + 1]->GetSprite()->setPosition({(672.f / 3.35), defensiveMinded});
-            mCards[defensiveSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 3.35), defensiveMinded});
-            mCards[defensiveSpot + 3]->GetSprite()->setPosition({672.f - (672.f / 10), defensiveMinded});
+            mCards[numDefenders]->GetSprite()->setPosition({(672.f / 10), defensiveMinded});
+            mCards[numDefenders + 1]->GetSprite()->setPosition({(672.f / 3.35), defensiveMinded});
+            mCards[numDefenders + 2]->GetSprite()->setPosition({672.f - (672.f / 3.35), defensiveMinded});
+            mCards[numDefenders + 3]->GetSprite()->setPosition({672.f - (672.f / 10), defensiveMinded});
         }
 
         /// attacking mids
-        int firstSpot = first + defensiveSpot;
+        int firstSpot = first + numDefenders;
         if (second == 1) {
             mCards[firstSpot]->GetSprite()->setPosition({672.f /2, attackingMinded});
         }
@@ -340,6 +348,21 @@ void Draft::SetLocations() {
             mCards[firstSpot + 1]->GetSprite()->setPosition({(672.f / 3), attackingMinded});
             mCards[firstSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 3), attackingMinded});
             mCards[firstSpot + 3]->GetSprite()->setPosition({672.f - (672.f / 10), attackingMinded});
+        }
+    }
+    else if (midfield.length() == 3) {
+        /// we know its going to be 1-2-1, but with a varience or not
+        if (isVarient) {
+            mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, midHeight));
+            mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, defensiveMinded));
+            mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
+            mCards[numDefenders + 3]->GetSprite()->setPosition({672.f / 2, attackingMinded});
+        }
+        else {
+            mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f((672.f / 10), midHeight));
+            mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, defensiveMinded));
+            mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), midHeight));
+            mCards[numDefenders + 3]->GetSprite()->setPosition({672.f / 2, attackingMinded});
         }
     }
 
