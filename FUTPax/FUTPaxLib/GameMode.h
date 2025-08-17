@@ -33,7 +33,7 @@ public:
 
     virtual ~GameMode();
 
-    GameMode(std::string backgroundName, Game * game);
+    GameMode(std::string backgroundName, Game *game, sf::Vector2f position);
 
     virtual void Draw(sf::RenderWindow *window);
 

@@ -17,7 +17,9 @@ set(SOURCE_FILES
         Formation.cpp
         Formation.h
         Card.cpp
-        Card.h)
+        Card.h
+        PlayerSelections.cpp
+        PlayerSelections.h)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 

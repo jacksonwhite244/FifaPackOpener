@@ -14,7 +14,7 @@ using namespace std;
  * Custom constructor
  * @param game pointer to the game object
  */
-Draft::Draft(Game * game) : GameMode("backgrounds/grey-background.png", game){
+Draft::Draft(Game * game) : GameMode("backgrounds/grey-background.png", game, {0,0}){
     LoadSprites();
     LoadFormations();
     mMode = ChoosingFormation;

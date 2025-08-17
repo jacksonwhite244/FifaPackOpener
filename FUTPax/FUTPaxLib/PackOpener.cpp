@@ -12,7 +12,7 @@ using namespace std;
 /**
  * Custom constructor for PackOpener game mode
  */
-PackOpener::PackOpener(Game * game) : GameMode("backgrounds/background.png", game){
+PackOpener::PackOpener(Game * game) : GameMode("backgrounds/background.png", game, {0,0}){
     mPackTexture = std::make_shared<sf::Texture>();
     if (mPackTexture->loadFromFile("images/normalPack.png")) {
         mPackSprite = std::make_shared<sf::Sprite>(*mPackTexture);
