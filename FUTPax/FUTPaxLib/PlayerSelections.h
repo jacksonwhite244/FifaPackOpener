@@ -7,6 +7,7 @@
 
 #include "GameMode.h"
 class Game;
+class Card;
 
 class PlayerSelections : public GameMode {
 public:
@@ -17,7 +18,17 @@ public:
 
     void Draw(sf::RenderWindow *window) override;
 
+private:
+
     void OnClick(const sf::Event::MouseButtonReleased *) override;
+
+    void GenerateOptions();
+
+    /// the vector of cards
+    std::vector<std::shared_ptr<Card>> mCards;
+
+    /// the position we are loading cards for
+    std::string mPosition;
 
 private:
 

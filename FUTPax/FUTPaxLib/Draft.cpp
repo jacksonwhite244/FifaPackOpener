@@ -7,6 +7,8 @@
 #include "Game.h"
 #include "Formation.h"
 #include "Card.h"
+#include "PlayerSelections.h"
+#include "PlayerSelections.h"
 
 using namespace std;
 
@@ -37,6 +39,9 @@ void Draft::Draw(sf::RenderWindow *window) {
         for (auto card : mCards) {
             window->draw(*card->GetSprite());
         }
+    }
+    else if (mMode == PickingPlayer) {
+        mPlayerSelector->Draw(window);
     }
 
     if (mMode != PickingPlayer) {
@@ -69,7 +74,9 @@ void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
         for (auto card : mCards) {
             if (card->WasClicked(mouseButton)) {
                 /// start the logic for selecting the player
-                card->GetSprite()->setScale({1,1});
+                mMode = PickingPlayer;
+                auto pos = card->GetPosition();
+                mPlayerSelector = make_shared<PlayerSelections>(GetGame(), card->GetPosition());
             }
         }
     }
@@ -168,12 +175,19 @@ void Draft::SetLocations() {
         mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /5, defenderHeight));
         mCards[2]->GetSprite()->setPosition(sf::Vector2f(672.f / 2 , defenderHeight));
         mCards[3]->GetSprite()->setPosition(sf::Vector2f(672.f * 4 / 5, defenderHeight));
+        mCards[1]->SetPosition("CB");
+        mCards[2]->SetPosition("CB");
+        mCards[3]->SetPosition("CB");
     }
     else if (mName[0] == '4') {
         mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /10, defenderHeight));
         mCards[2]->GetSprite()->setPosition(sf::Vector2f(672.f / 3 , defenderHeight));
         mCards[3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3), defenderHeight));
         mCards[4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), defenderHeight));
+        mCards[1]->SetPosition("LB");
+        mCards[2]->SetPosition("CB");
+        mCards[3]->SetPosition("CB");
+        mCards[4]->SetPosition("RB");
     }
     else if (mName[0] == '5') {
         mCards[1]->GetSprite()->setPosition(sf::Vector2f(672.f /10, defenderHeight));
@@ -181,6 +195,11 @@ void Draft::SetLocations() {
         mCards[3]->GetSprite()->setPosition(sf::Vector2f(672.f /2, defenderHeight));
         mCards[4]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), defenderHeight));
         mCards[5]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), defenderHeight));
+        mCards[1]->SetPosition("LB");
+        mCards[2]->SetPosition("CB");
+        mCards[3]->SetPosition("CB");
+        mCards[4]->SetPosition("CB");
+        mCards[5]->SetPosition("RB");
     }
 
     /// Forwards
@@ -198,21 +217,31 @@ void Draft::SetLocations() {
     float wingerHeight = 240;
     if (numAttackers == '1') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /2, strikerdHeight));
+        mCards[10]->SetPosition("ST");
     }
     if (numAttackers == '2') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f /3, strikerdHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /3 ), strikerdHeight));
+        mCards[10]->SetPosition("ST");
+        mCards[9]->SetPosition("ST");
     }
     else if (numAttackers == '3') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, wingerHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, strikerdHeight));
         mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), wingerHeight));
+        mCards[10]->SetPosition("LW");
+        mCards[9]->SetPosition("ST");
+        mCards[8]->SetPosition("RW");
     }
     else if (numAttackers == '4') {
         mCards[10]->GetSprite()->setPosition(sf::Vector2f(672.f / 10, wingerHeight));
         mCards[9]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, strikerdHeight));
         mCards[8]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), strikerdHeight));
         mCards[7]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), wingerHeight));
+        mCards[10]->SetPosition("LW");
+        mCards[9]->SetPosition("ST");
+        mCards[8]->SetPosition("ST");
+        mCards[7]->SetPosition("RW");
     }
 
     /// Midfield
@@ -240,30 +269,44 @@ void Draft::SetLocations() {
         if (midfield == "2") {
             mCards[numDefenders]->GetSprite()->setPosition({672.f /3, midHeight});
             mCards[numDefenders+1]->GetSprite()->setPosition({672.f - (672.f /3), midHeight});
+            mCards[numDefenders]->SetPosition("CM");
+            mCards[numDefenders+1]->SetPosition("CM");
         }
         else if (midfield == "3") {
             if (not isVarient) {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, midHeight));
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, midHeight));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
+                mCards[numDefenders]->SetPosition("CM");
+                mCards[numDefenders+1]->SetPosition("CM");
+                mCards[numDefenders + 2]->SetPosition("CM");
             }
             /// 1 cdm
             else if (varience == 2) {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, midHeight));
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, defensiveMinded));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
+                mCards[numDefenders]->SetPosition("CM");
+                mCards[numDefenders+1]->SetPosition("CDM");
+                mCards[numDefenders + 2]->SetPosition("CM");
             }
             /// 2 cdms
             else if (varience == 3) {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, defensiveMinded));
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, midHeight));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), defensiveMinded));
+                mCards[numDefenders]->SetPosition("CDM");
+                mCards[numDefenders+1]->SetPosition("CM");
+                mCards[numDefenders + 2]->SetPosition("CDM");
             }
             /// 1 cam
             else if (varience == 4) {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 5, midHeight));
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, attackingMinded));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
+                mCards[numDefenders]->SetPosition("CM");
+                mCards[numDefenders+1]->SetPosition("CAM");
+                mCards[numDefenders + 2]->SetPosition("CM");
             }
         }
         else if (midfield == "4") {
@@ -272,12 +315,20 @@ void Draft::SetLocations() {
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, midHeight));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), midHeight));
                 mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), midHeight));
+                mCards[numDefenders]->SetPosition("LM");
+                mCards[numDefenders+1]->SetPosition("CM");
+                mCards[numDefenders + 2]->SetPosition("CM");
+                mCards[numDefenders + 3]->SetPosition("RM");
             }
             else {
                 mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f / 10, midHeight));
                 mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 3, defensiveMinded));
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 3), defensiveMinded));
                 mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), midHeight));
+                mCards[numDefenders]->SetPosition("LW");
+                mCards[numDefenders+1]->SetPosition("CDM");
+                mCards[numDefenders + 2]->SetPosition("CDM");
+                mCards[numDefenders + 3]->SetPosition("RM");
             }
         }
         else if (midfield == "5") {
@@ -288,6 +339,11 @@ void Draft::SetLocations() {
                     mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, attackingMinded));
                     mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), defensiveMinded));
                     mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                    mCards[numDefenders]->SetPosition("LM");
+                    mCards[numDefenders+1]->SetPosition("CDM");
+                    mCards[numDefenders + 2]->SetPosition("CAM");
+                    mCards[numDefenders + 3]->SetPosition("CDM");
+                    mCards[numDefenders + 4]->SetPosition("RM");
                 }
                 else {
                     mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f(672.f /10, midHeight));
@@ -295,6 +351,11 @@ void Draft::SetLocations() {
                     mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
                     mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), attackingMinded));
                     mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                    mCards[numDefenders]->SetPosition("LM");
+                    mCards[numDefenders+1]->SetPosition("CAM");
+                    mCards[numDefenders + 2]->SetPosition("CM");
+                    mCards[numDefenders + 3]->SetPosition("CAM");
+                    mCards[numDefenders + 4]->SetPosition("RM");
                 }
             }
             else {
@@ -303,6 +364,11 @@ void Draft::SetLocations() {
                 mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f /2, midHeight));
                 mCards[numDefenders + 3]->GetSprite()->setPosition(sf::Vector2f(672 - (672.f / 3.35), midHeight));
                 mCards[numDefenders + 4]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f /10), midHeight));
+                mCards[numDefenders]->SetPosition("LM");
+                mCards[numDefenders+1]->SetPosition("CM");
+                mCards[numDefenders + 2]->SetPosition("CM");
+                mCards[numDefenders + 3]->SetPosition("CM");
+                mCards[numDefenders + 4]->SetPosition("RM");
             }
         }
     }
@@ -312,42 +378,62 @@ void Draft::SetLocations() {
         /// defensive mids
         if (first == 1) {
             mCards[numDefenders]->GetSprite()->setPosition({672.f /2, defensiveMinded});
+            mCards[numDefenders]->SetPosition("CDM");
         }
         else if (first == 2) {
             mCards[numDefenders]->GetSprite()->setPosition({672.f /3, defensiveMinded});
             mCards[numDefenders + 1]->GetSprite()->setPosition({672.f - (672.f /3), defensiveMinded});
+            mCards[numDefenders]->SetPosition("CDM");
+            mCards[numDefenders + 1]->SetPosition("CDM");
         }
         else if (first == 3) {
             mCards[numDefenders]->GetSprite()->setPosition({672.f / 5, defensiveMinded});
             mCards[numDefenders + 1]->GetSprite()->setPosition({672.f /2, defensiveMinded});
             mCards[numDefenders + 2]->GetSprite()->setPosition({672.f - (672.f / 5), defensiveMinded});
+            mCards[numDefenders]->SetPosition("CM");
+            mCards[numDefenders + 1]->SetPosition("CM");
+            mCards[numDefenders + 2]->SetPosition("CM");
         }
         else if (first == 4) {
             mCards[numDefenders]->GetSprite()->setPosition({(672.f / 10), defensiveMinded});
             mCards[numDefenders + 1]->GetSprite()->setPosition({(672.f / 3.35), defensiveMinded});
             mCards[numDefenders + 2]->GetSprite()->setPosition({672.f - (672.f / 3.35), defensiveMinded});
             mCards[numDefenders + 3]->GetSprite()->setPosition({672.f - (672.f / 10), defensiveMinded});
+            mCards[numDefenders]->SetPosition("LM");
+            mCards[numDefenders + 1]->SetPosition("CM");
+            mCards[numDefenders + 2]->SetPosition("CM");
+            mCards[numDefenders + 3]->SetPosition("RM");
         }
 
         /// attacking mids
         int firstSpot = first + numDefenders;
         if (second == 1) {
             mCards[firstSpot]->GetSprite()->setPosition({672.f /2, attackingMinded});
+            mCards[firstSpot]->SetPosition("CAM");
         }
         else if (second == 2) {
             mCards[firstSpot]->GetSprite()->setPosition({(672.f / 7), attackingMinded});
             mCards[firstSpot + 1]->GetSprite()->setPosition({672.f - (672.f / 7), attackingMinded});
+            mCards[firstSpot]->SetPosition("CAM");
+            mCards[firstSpot + 1]->SetPosition("CAM");
         }
         else if (second == 3) {
             mCards[firstSpot]->GetSprite()->setPosition({(672.f / 5), attackingMinded});
             mCards[firstSpot + 1]->GetSprite()->setPosition({672.f / 2, attackingMinded});
             mCards[firstSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 5), attackingMinded});
+            mCards[firstSpot]->SetPosition("LM");
+            mCards[firstSpot + 1]->SetPosition("CAM");
+            mCards[firstSpot + 2]->SetPosition("RM");
         }
         else if (second == 4) {
             mCards[firstSpot]->GetSprite()->setPosition({(672.f / 10), attackingMinded});
             mCards[firstSpot + 1]->GetSprite()->setPosition({(672.f / 3), attackingMinded});
             mCards[firstSpot + 2]->GetSprite()->setPosition({672.f - (672.f / 3), attackingMinded});
             mCards[firstSpot + 3]->GetSprite()->setPosition({672.f - (672.f / 10), attackingMinded});
+            mCards[firstSpot]->SetPosition("LM");
+            mCards[firstSpot + 1]->SetPosition("CM");
+            mCards[firstSpot + 2]->SetPosition("CM");
+            mCards[firstSpot + 3]->SetPosition("RM");
         }
     }
     else if (midfield.length() == 3) {
@@ -357,12 +443,20 @@ void Draft::SetLocations() {
             mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, defensiveMinded));
             mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 5), midHeight));
             mCards[numDefenders + 3]->GetSprite()->setPosition({672.f / 2, attackingMinded});
+            mCards[numDefenders]->SetPosition("CM");
+            mCards[numDefenders + 1]->SetPosition("CDM");
+            mCards[numDefenders + 2]->SetPosition("CM");
+            mCards[numDefenders + 3]->SetPosition("CAM");
         }
         else {
             mCards[numDefenders]->GetSprite()->setPosition(sf::Vector2f((672.f / 10), midHeight));
             mCards[numDefenders + 1]->GetSprite()->setPosition(sf::Vector2f(672.f / 2, defensiveMinded));
             mCards[numDefenders + 2]->GetSprite()->setPosition(sf::Vector2f(672.f - (672.f / 10), midHeight));
             mCards[numDefenders + 3]->GetSprite()->setPosition({672.f / 2, attackingMinded});
+            mCards[numDefenders]->SetPosition("LM");
+            mCards[numDefenders + 1]->SetPosition("CDM");
+            mCards[numDefenders + 2]->SetPosition("RM");
+            mCards[numDefenders + 3]->SetPosition("CAM");
         }
     }
 

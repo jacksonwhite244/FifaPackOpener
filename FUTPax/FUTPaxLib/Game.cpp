@@ -124,6 +124,11 @@ void Game::InitializeAvailableCards() {
             auto path = entry.path();
             // Filter for image extensions if needed
             if (path.extension() == ".png" || path.extension() == ".jpg") {
+                auto card = path.filename().string();
+                auto begPos = card.find_last_of('_') + 1;
+                auto endPos = card.find_last_of('.');
+                auto position = card.substr(begPos, endPos - begPos);
+                mAvailableCardsPositions[position].push_back(path.filename().string());
                 mAvailableCards.push_back(path.filename().string());
             }
         }

@@ -10,7 +10,9 @@ class PackOpener;
 class GameMode;
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
+#include "map"
+
+
 /**
  * Game class manages all different modes
  * Can be in draft mode, pack opening mode
@@ -53,6 +55,8 @@ private:
     /// all the textures for menu options
     std::vector<std::shared_ptr<sf::Texture>> mMenuTextures;
 
+    std::map<std::string, std::vector<std::string>> mAvailableCardsPositions;
+
 public:
     Game();
 
@@ -76,6 +80,8 @@ public:
      * @return a vector of all available formations
      */
     std::vector<std::string> GetFormations() { return mFormations; };
+
+    std::vector<std::string> GetCardsByPosition(std::string pos) { return mAvailableCardsPositions[pos]; }
 
 
 };

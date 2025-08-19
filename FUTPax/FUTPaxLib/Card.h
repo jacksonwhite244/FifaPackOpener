@@ -19,6 +19,9 @@ private:
 
     /// the rating of the card
     int mRating;
+
+    /// the position of the card (lb, gk, rb ...)
+    std::string mPosition;
 public:
     /// default constructor disabled
     Card() = delete;
@@ -44,6 +47,10 @@ public:
      * @return the rating of the card
      */
     int GetRating() { return mRating; }
+
+    void SetPosition(std::string pos) { mPosition = pos; };
+
+    std::string GetPosition() { return mPosition; }
 };
 
 

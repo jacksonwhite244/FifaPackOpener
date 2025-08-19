@@ -5,6 +5,8 @@
 #include "pch.h"
 #include "Card.h"
 
+#include <utility>
+
 using namespace std;
 /**
  * Custom constructor for the card
@@ -13,7 +15,7 @@ using namespace std;
  * @param texture a shared pointer to the texture
  * @param rating the overall of the card
  */
-Card::Card(shared_ptr<sf::Sprite> sprite, shared_ptr<sf::Texture> texture , int rating) : mSprite(sprite), mTexture(texture), mRating(rating) {
+Card::Card(shared_ptr<sf::Sprite> sprite, shared_ptr<sf::Texture> texture , int rating) : mSprite(std::move(sprite)), mTexture(std::move(texture)), mRating(rating) {
 
 }
 

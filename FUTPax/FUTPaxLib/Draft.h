@@ -10,6 +10,7 @@
 class Game;
 class Formation;
 class Card;
+class PlayerSelections;
 
 /**
  * Draft class game mode where the user can draft a squad
@@ -29,6 +30,8 @@ private:
     std::shared_ptr<sf::Sprite> mPitchSprite = nullptr;
 
     std::vector<std::shared_ptr<Card>> mCards;
+
+    std::shared_ptr<PlayerSelections> mPlayerSelector;
 
     /// all the possible modes that are available during the gameplay
     enum Mode { ChoosingFormation, PickingPlayer, DisplayingTeam};
@@ -50,13 +53,14 @@ private:
 
     void SelectFormation();
 
+    void Draw(sf::RenderWindow *window) override;
+
 public:
     /// default constructor deleted
     Draft() = delete;
 
     Draft(Game *game);
 
-    void Draw(sf::RenderWindow *window) override;
 
     ~Draft();
 
