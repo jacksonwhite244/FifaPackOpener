@@ -12,7 +12,7 @@ using namespace std;
 /**
  * Custom constructor for PackOpener game mode
  */
-PackOpener::PackOpener(Game * game) : GameMode("backgrounds/background.png", game, {0,0}){
+PackOpener::PackOpener(Game * game) : GameMode("backgrounds/background.png", game){
     mPackTexture = std::make_shared<sf::Texture>();
     if (mPackTexture->loadFromFile("images/normalPack.png")) {
         mPackSprite = std::make_shared<sf::Sprite>(*mPackTexture);
@@ -65,14 +65,14 @@ void PackOpener::Draw(sf::RenderWindow* window) {
  * Virtual ovveriden function that handles when a user has clicked their mouise
  * @param  mouseButton he event we are dealong with (mouse button released)
  */
-void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
+bool PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     /// user has clicked on the home sprite
     if (mHomeSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
         /// if the pack is currently opening or opened but not fully opened, skip since the home icon isnt being shown
         /// everything other than that should result in the user being sent back home
         if (not ((not mOpened && mOpening) || (mOpened and not mFullOpened))) {
             ExitGame();
-            return;
+            return false;
         }
     }
 
@@ -94,7 +94,7 @@ void PackOpener::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
 
     /// the pack is fully opened, so generate a new pack
     else NewPack();
-
+    return false;
 }
 
 /**

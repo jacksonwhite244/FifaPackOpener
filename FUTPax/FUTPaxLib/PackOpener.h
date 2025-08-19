@@ -49,7 +49,7 @@ private:
     /// if the pack is currently in the changing state (pack is going up and face card is revealing)
     bool mOpening = false;
 
-    void OnClick(const sf::Event::MouseButtonReleased *) override;
+    bool OnClick(const sf::Event::MouseButtonReleased *) override;
 
     void AdjustPack();
 

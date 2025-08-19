@@ -15,7 +15,7 @@ using namespace std;
  * @param game pointer to the game object
  * @param position the position of the player selections
  */
-PlayerSelections::PlayerSelections(Game * game, string position) : mPosition(position), GameMode("backgrounds/white-background.png", game, {35,300}) {
+PlayerSelections::PlayerSelections(Game * game, string position) : mPosition(position), GameMode("backgrounds/PlayerSelectBackground.png", game) {
     GenerateOptions();
 }
 
@@ -34,8 +34,15 @@ void PlayerSelections::Draw(sf::RenderWindow *window) {
  * React to user input bt selecting the correct player
  * @param event the mouse click of the user
  */
-void PlayerSelections::OnClick(const sf::Event::MouseButtonReleased *event) {
-
+bool PlayerSelections::OnClick(const sf::Event::MouseButtonReleased *event) {
+    for (auto card : mCards) {
+        if (card->GetSprite()->getGlobalBounds().contains(sf::Vector2<float>(event->position))) {
+            card->GetSprite()->setScale({0.55,0.55});
+            mSelectedCard = card;
+            return true;
+        }
+    }
+    return false;
 }
 
 void PlayerSelections::GenerateOptions() {
@@ -71,7 +78,7 @@ void PlayerSelections::GenerateOptions() {
 
     for (int col = 0; col < 5; col++) {
         auto card = mCards[col]->GetSprite();
-        card->setPosition({col * 110 + 130.f, 350.f});
+        card->setPosition({col * 132 + 70.f, 485.f});
     }
 }
 

@@ -16,7 +16,7 @@ using namespace std;
  * Custom constructor
  * @param game pointer to the game object
  */
-Draft::Draft(Game * game) : GameMode("backgrounds/grey-background.png", game, {0,0}){
+Draft::Draft(Game * game) : GameMode("backgrounds/grey-background.png", game){
     LoadSprites();
     LoadFormations();
     mMode = ChoosingFormation;
@@ -41,6 +41,11 @@ void Draft::Draw(sf::RenderWindow *window) {
         }
     }
     else if (mMode == PickingPlayer) {
+        window->draw(*mPitchSprite);
+        for (auto card : mCards) {
+            window->draw(*card->GetSprite());
+        }
+
         mPlayerSelector->Draw(window);
     }
 
@@ -52,7 +57,7 @@ void Draft::Draw(sf::RenderWindow *window) {
 /**
  * override onclick function to take users input and do what the user wants (selecting players / formations)
  */
-void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
+bool Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
     /// user has clicked on the home sprite
     if (mHomeSprite->getGlobalBounds().contains(sf::Vector2<float>(mouseButton->position))) {
         /// as long as the user is not picking a player, we can exit the game
@@ -80,6 +85,10 @@ void Draft::OnClick(const sf::Event::MouseButtonReleased * mouseButton) {
             }
         }
     }
+    else if (mMode == PickingPlayer) {
+        mPlayerSelector->OnClick(mouseButton);
+    }
+    return false;
 }
 
 /**

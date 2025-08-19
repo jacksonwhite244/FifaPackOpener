@@ -45,7 +45,7 @@ private:
     /// name
     std::string mName;
 
-    void OnClick(const sf::Event::MouseButtonReleased *) override;
+    bool OnClick(const sf::Event::MouseButtonReleased *) override;
 
     void LoadSprites();
 

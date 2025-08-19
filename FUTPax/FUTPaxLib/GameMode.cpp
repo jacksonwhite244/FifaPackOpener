@@ -14,11 +14,12 @@ using namespace std;
  *
  * @param backgroundName the background filepath to the png
  */
-GameMode::GameMode(std::string backgroundName, Game * game, sf::Vector2f position) : mGame(game) {
+GameMode::GameMode(std::string backgroundName, Game * game) : mGame(game) {
     mBackgroundTexture = new sf::Texture();
     if (mBackgroundTexture->loadFromFile(backgroundName)) {
         mBackgroundSprite = new sf::Sprite(*mBackgroundTexture);
-        mBackgroundSprite->setPosition(position);
+        mBackgroundSprite->setOrigin({mBackgroundTexture->getSize().x / 2.f, mBackgroundTexture->getSize().y / 2.f});
+        mBackgroundSprite->setPosition({336,475});
     }
 }
 

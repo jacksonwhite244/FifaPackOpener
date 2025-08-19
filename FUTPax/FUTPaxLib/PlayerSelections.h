@@ -18,9 +18,8 @@ public:
 
     void Draw(sf::RenderWindow *window) override;
 
+    bool OnClick(const sf::Event::MouseButtonReleased *) override;
 private:
-
-    void OnClick(const sf::Event::MouseButtonReleased *) override;
 
     void GenerateOptions();
 
@@ -29,6 +28,9 @@ private:
 
     /// the position we are loading cards for
     std::string mPosition;
+
+    /// the selected card by the user
+    std::shared_ptr<Card> mSelectedCard;
 
 private:
 
