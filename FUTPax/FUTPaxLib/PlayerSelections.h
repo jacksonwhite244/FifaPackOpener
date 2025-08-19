@@ -9,6 +9,10 @@
 class Game;
 class Card;
 
+/**
+ * Player Selection is the screen that pops up when you are drafting a team
+ * Each selection has 5 player options based on the position we are selecting
+ */
 class PlayerSelections : public GameMode {
 public:
     /// default constructor disabled
@@ -19,6 +23,12 @@ public:
     void Draw(sf::RenderWindow *window) override;
 
     bool OnClick(const sf::Event::MouseButtonReleased *) override;
+
+    /**
+     * Get the selected card
+     * @return a shared pointer to the selected card
+     */
+    std::shared_ptr<Card> SelectCard() { return mSelectedCard; };
 private:
 
     void GenerateOptions();

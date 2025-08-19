@@ -29,7 +29,11 @@ private:
     /// the sprite of the pitch
     std::shared_ptr<sf::Sprite> mPitchSprite = nullptr;
 
-    std::vector<std::shared_ptr<Card>> mCards;
+    /// all of the empty slots we can select a player for
+    std::vector<std::shared_ptr<Card>> mAvailableSpots;
+
+    /// all of the players that were chosen for our team
+    std::vector<std::shared_ptr<Card>> mChosenPlayers;
 
     std::shared_ptr<PlayerSelections> mPlayerSelector;
 
@@ -54,6 +58,8 @@ private:
     void SelectFormation();
 
     void Draw(sf::RenderWindow *window) override;
+
+    int mChoosingSpot = -1;
 
 public:
     /// default constructor deleted
