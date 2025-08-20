@@ -16,8 +16,8 @@ HEADERS = {
 }
 
 BASE_URL = 'https://www.futbin.com'
-LISTING_URL = 'https://www.futbin.com/players?page={}&version=gold_rare'
-SAVE_DIR = '/Users/jacksonwhite/CodingProjects/FifaPackOpener/cards'
+LISTING_URL = 'https://www.futbin.com/players?page={}&version=team_of_the_season'
+SAVE_DIR = '/Users/jacksonwhite/CodingProjects/FifaPackOpener/FutPax/cards'
 FONT_PATH = "/Library/Fonts/Arial Bold.ttf"
 RATING_FONT = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 28)  # Bold and prominent
 POSITION_FONT = ImageFont.truetype("/Library/Fonts/Arial.ttf", 15)     # Small and subtle
@@ -93,8 +93,10 @@ def generate_card_image(bg_url, face_url, info, width, height, player_width, pla
     bg = fetch_image(bg_url).resize((width, height))
     face = fetch_image(face_url).resize((player_width, player_height))
     # Center player face horizontally with a slight offset
-    face_x = (width - face.width) // 2 + 5
-    face_y = 60
+    face_x = 0
+    # face_x = (width - face.width) // 2 + 5 this worked for icons and regular cards
+    # face_y = 60 this worked for icons and regualr gold cards
+    face_y = 0
     bg.paste(face, (face_x, face_y), mask=face)
 
     draw = ImageDraw.Draw(bg)
@@ -147,7 +149,7 @@ def generate_card_image(bg_url, face_url, info, width, height, player_width, pla
 def get_all_player_links():
     print("Collecting player links...")
     player_links = []
-    for page in range(1, 2):  # max pages
+    for page in range(1, 100):  # max pages
         print(f"Scraping page {page}...")
         url = LISTING_URL.format(page)
         response = requests.get(url, headers=HEADERS)
@@ -212,7 +214,7 @@ def scrape_and_generate_card(player_url):
 
         # Construct filename
         name = info["name"].lower().replace(" ", "_")
-        card_type = info.get("card_type", "gold-rare").lower()  # use "gold" if you know it's gold
+        card_type = info.get("card_type", "tots").lower()  # use "gold" if you know it's gold
         rating = info["stats"].get("RAT") or info["stats"].get("Rating") or "??"
         position = info["stats"].get("POS") or info["stats"].get("Position") or "??"
         filename = f"{name}_{card_type}_{rating}_{position}.png"
