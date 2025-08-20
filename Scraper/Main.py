@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
 import time
+import re
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
@@ -16,8 +17,8 @@ HEADERS = {
 }
 
 BASE_URL = 'https://www.futbin.com'
-LISTING_URL = 'https://www.futbin.com/players?page={}&version=team_of_the_season'
-SAVE_DIR = '/Users/jacksonwhite/CodingProjects/FifaPackOpener/FutPax/cards'
+LISTING_URL = 'https://www.futbin.com/players?page={}&version=gold_if'
+SAVE_DIR = '/Users/jacksonwhite/CodingProjects/FifaPackOpener/testing'
 FONT_PATH = "/Library/Fonts/Arial Bold.ttf"
 RATING_FONT = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 28)  # Bold and prominent
 POSITION_FONT = ImageFont.truetype("/Library/Fonts/Arial.ttf", 15)     # Small and subtle
@@ -89,19 +90,26 @@ def extract_player_info(soup):
         }
     }
 
-def generate_card_image(bg_url, face_url, info, width, height, player_width, player_height):
+def generate_card_image(bg_url, face_url, info, width, height, player_width, player_height, top_offset=None):
     bg = fetch_image(bg_url).resize((width, height))
     face = fetch_image(face_url).resize((player_width, player_height))
-    # Center player face horizontally with a slight offset
-    face_x = 0
-    # face_x = (width - face.width) // 2 + 5 this worked for icons and regular cards
-    # face_y = 60 this worked for icons and regualr gold cards
-    face_y = 0
+
+    # Center player face horizontally
+    face_x = (width - face.width) // 2
+
+    # Vertical placement
+    if top_offset is not None:
+        face_y = top_offset
+    else:
+        face_y = 0
+        #face_y = 60   # default that worked for icons/gold cards
+
+    # Paste player face
     bg.paste(face, (face_x, face_y), mask=face)
 
     draw = ImageDraw.Draw(bg)
     font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
-    small_font = ImageFont.truetype(FONT_PATH, 18)  # smaller font for rating/position
+    small_font = ImageFont.truetype(FONT_PATH, 18)
 
     # Player name centered
     text = info["name"]
@@ -111,34 +119,35 @@ def generate_card_image(bg_url, face_url, info, width, height, player_width, pla
     y = int(height * 0.64)
     draw.text((x, y), text, fill=info.get("color", info['card_color']), font=font)
 
-    # Rating (e.g., "91") - top-left aligned or centered if needed
+    # Rating
     rating = info["stats"].get("RAT") or info["stats"].get("Rating") or "??"
     rating_bbox = draw.textbbox((0, 0), rating, font=RATING_FONT)
     rating_width = rating_bbox[2] - rating_bbox[0]
-    rating_x = 57 - rating_width // 2  # Centered around x=35
+    rating_x = 57 - rating_width // 2
     rating_y = 73
     draw.text((rating_x, rating_y), rating, fill=info.get("color", info['card_color']), font=RATING_FONT)
 
-    # Position (e.g., "ST") - slightly below rating
+    # Position
     position = info["stats"].get("POS") or info["stats"].get("Position") or "??"
     position_bbox = draw.textbbox((0, 0), position, font=POSITION_FONT)
     position_width = position_bbox[2] - position_bbox[0]
-    position_x = 56 - position_width // 2  # Same center x as rating
-    position_y = rating_y + 26  # 26 pixels lower; tweak if needed
+    position_x = 56 - position_width // 2
+    position_y = rating_y + 26
     draw.text((position_x, position_y), position, fill=info.get("color", info['card_color']), font=POSITION_FONT)
 
-    # Paste nation flag icon top-right (adjust coords as needed)
+    # Nation flag
     nation_url = info["icons"].get("Nation")
     if nation_url:
         flag = fetch_image(nation_url).resize((22, 15))
         bg.paste(flag, (width // 2 - 25 - 12, 288), mask=flag)
 
-    # Paste club icon below nation flag
+    # Club icon
     club_url = info["icons"].get("Club")
     if club_url:
         club = fetch_image(club_url).resize((22, 22))
         bg.paste(club, (width // 2 + 25 - 11, 285), mask=club)
 
+    # League icon
     league_url = info["icons"].get("League")
     if league_url:
         league = fetch_image(league_url).resize((22, 22))
@@ -210,11 +219,28 @@ def scrape_and_generate_card(player_url):
         filename = f"{info['name'].replace(' ', '_')}.png"
         save_path = os.path.join(SAVE_DIR, filename)
 
-        image = generate_card_image(bg_url, face_url, info, card_width, card_height, player_width, player_height)
+        top_offset = None
+        style = face_tag.get("style", "")
+        if "top" in style:
+            try:
+                top_offset = int(re.search(r"top:(\d+)px", style).group(1))
+            except Exception:
+                pass
+
+        image = generate_card_image(
+            bg_url,
+            face_url,
+            info,
+            card_width,
+            card_height,
+            player_width,
+            player_height,
+            top_offset=top_offset  # 👈 inject only vertical offset
+        )
 
         # Construct filename
         name = info["name"].lower().replace(" ", "_")
-        card_type = info.get("card_type", "tots").lower()  # use "gold" if you know it's gold
+        card_type = info.get("card_type", "gold-if").lower()  # use "gold" if you know it's gold
         rating = info["stats"].get("RAT") or info["stats"].get("Rating") or "??"
         position = info["stats"].get("POS") or info["stats"].get("Position") or "??"
         filename = f"{name}_{card_type}_{rating}_{position}.png"
